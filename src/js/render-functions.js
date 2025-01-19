@@ -1,6 +1,7 @@
 export const createGalleryCard = imgInfo => {
     return `<li class="card-gallery">
-    <a>
+    <div class="card">
+    <a class="gallery-link" target="_blank" href="${imgInfo.largeImageURL}">
     <img class="img-gallery" src="${imgInfo.webformatURL}" alt="${imgInfo.tags}"/>
     </a>
 <div class="container-gallery">
@@ -23,7 +24,7 @@ export const createGalleryCard = imgInfo => {
 <p class="title-gallery">Downloads</p>
 <p class="gallery-item">${imgInfo.downloads}</p>
 </div>
-
+</div>
 </div>
     </li>`
 };
