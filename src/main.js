@@ -7,7 +7,6 @@ const form = document.querySelector('.form-gallery');
 const list = document.querySelector('.gallery');
 const loader = document.querySelector('.loader-container');
 const loadMoreBtn = document.querySelector('.load-more');
-let card = document.querySelector('.card-gallery');
 
 
 let page = 1;
