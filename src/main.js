@@ -77,7 +77,7 @@ const loadMoreBtnClick = async event => {
 
         modal.refresh()
         
-        if (page === data.totalHits) {
+        if (page * 15 >= data.totalHits) {
             loadMoreBtn.classList.add('is-hidden');
             loadMoreBtn.removeEventListener('click', loadMoreBtnClick);
             iziToast.error({
