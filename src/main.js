@@ -5,22 +5,23 @@ import { fetchPhotos } from './js/pixabay-api';
 
 const form = document.querySelector('.form-gallery');
 const list = document.querySelector('.gallery');
-const loader = document.querySelector('.loader-container');
+const loader = document.querySelector('.loader');
 const loadMoreBtn = document.querySelector('.load-more');
 
 
 let page = 1;
 let searchQuery = '';
-let modal;
+let modal = new SimpleLightbox('.gallery a', {
+                captionDelay: 300,
+                captionsData: 'alt',
+            });;
 
 const searchSubmit = async event => {
-    loader.style.display = 'block'
     try {
      event.preventDefault();
     searchQuery = event.currentTarget.elements.user_query.value.trim();
 
     if (searchQuery === '') {
-        loader.style.display = 'none';
         iziToast.error({
             message: 'Please enter your request',
             position: 'topRight'
@@ -30,14 +31,17 @@ const searchSubmit = async event => {
         page = 1;
         loadMoreBtn.classList.add('is-hidden');
     
-        const { data }= await fetchPhotos(searchQuery, page);
+        const { data } = await fetchPhotos(searchQuery, page);
+        
         if (data.total === 0) {
+            form.reset();
                 iziToast.error({
             message: "Sorry, there are no images matching your search query. Please try again!",
             position: 'topRight'
                 });
                 
-                list.innerHTML = '';
+            list.innerHTML = '';
+            form.reset();
                 return;
         }
         
@@ -50,15 +54,10 @@ const searchSubmit = async event => {
 
         list.innerHTML = galleryTemplate;
 
-            modal = new SimpleLightbox('.gallery a', {
-                captionDelay: 300,
-                captionsData: 'alt',
-            });
             modal.refresh();
     } catch (err) {
         console.log(err);
     }
-    loader.style.display = 'none';
     form.reset()
 };
 form.addEventListener('submit', searchSubmit);
@@ -67,14 +66,14 @@ const loadMoreBtnClick = async event => {
     try {
         page++;
 
+        loader.style.display = 'block';
+
         const { data } = await fetchPhotos(searchQuery, page);
 
         const galleryTemplate = data.hits.map(el => createGalleryCard(el)).join('');
-        modal = new SimpleLightbox('.gallery a', {
-                captionDelay: 300,
-                captionsData: 'alt',
-            });
+    
         list.insertAdjacentHTML('beforeend', galleryTemplate);
+        loader.style.display = 'none';
 
         modal.refresh()
         
@@ -88,6 +87,7 @@ const loadMoreBtnClick = async event => {
         }
         scrollDown();
     } catch (err) {
+        loader.style.display = 'none';
         console.log(err)
     }
 }
